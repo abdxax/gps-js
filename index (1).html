@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        
+    </head>
+    <body>
+        <div>
+            <h3>GPS</h3>
+            <p>latitude - <span id="latitude1"></span></p>
+            <p>longitude - <span id="longitude1"></span></p>
+        </div>
+
+        <div>
+            <h3>Network</h3>
+            <p>latitude - <span id="latitude2"></span></p>
+            <p>longitude - <span id="longitude2"></span></p>
+        </div>
+        
+        <script>
+
+////Network
+fetch('https://api.ipregistry.co/?key=tryout')
+    .then(function (response) {
+        return response.json();
+    })
+    .then(function (payload) {
+        console.log(payload.location.country.name + ', ' + payload.location.city);
+        document.getElementById("latitude2").innerHTML=payload.location.latitude;
+        document.getElementById("longitude2").innerHTML=payload.location.longitude;
+
+    });
+
+
+////GPS
+    var options = {
+  enableHighAccuracy: true,
+  timeout: 5000,
+  maximumAge: 0
+};
+
+function success(pos) {
+  var crd = pos.coords;
+
+  console.log('Your current position is:');
+  console.log(`Latitude : ${crd.latitude}`);
+  console.log(`Longitude: ${crd.longitude}`);
+  console.log(`More or less ${crd.accuracy} meters.`);
+  document.getElementById("latitude1").innerHTML=crd.latitude;
+  document.getElementById("longitude1").innerHTML=crd.longitude;
+
+  getCity(crd.latitude,crd.longitude)
+}
+
+function error(err) {
+  console.warn(`ERROR(${err.code}): ${err.message}`);
+}
+
+navigator.geolocation.getCurrentPosition(success, error, options);
+
+//key : pk.0ff2e0c5f9b112dc76fb10fedc1bf19d
+
+function getCity(lat,lang) { 
+
+var xhr = new XMLHttpRequest(); 
+
+var lat = lat; 
+
+var lng = lang; 
+
+
+
+// Paste your LocationIQ token below. 
+
+xhr.open('GET', "https://us1.locationiq.com/v1/reverse.php?key=pk.0ff2e0c5f9b112dc76fb10fedc1bf19d&lat=" + 
+
+lat + "&lon=" + lng + "&format=json", true); 
+
+xhr.send(); 
+
+xhr.onreadystatechange = processRequest; 
+
+xhr.addEventListener("readystatechange", processRequest, false); 
+
+
+
+function processRequest(e) { 
+
+    if (xhr.readyState == 4 && xhr.status == 200) { 
+
+        var response = JSON.parse(xhr.responseText); 
+
+        var city = response.address.city; 
+
+        console.log(city); 
+        if(city=='جدة'||city=="Jeddah"){
+            alert ("هنا جدة مرحبا بكم ")
+        }
+        else{
+            
+        }
+
+        return; 
+
+    } 
+
+} 
+} 
+
+
+
+        </script>
+    </body>
+</html>
